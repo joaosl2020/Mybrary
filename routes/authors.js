@@ -44,7 +44,8 @@ router.post('/', async (req, res) => {
         res.render('authors/new', { author: author, errorMessage: "Something went wrong :(" })
     }
 
-  {  // author.save((err, newAuthor) => {
+  {  
+      // author.save((err, newAuthor) => {
     //     if (err){
     //         // let locals = { author: author, errorMessage: "Something went wrong :(" }
     //         // res.render('authors/new', { author: author, errorMessage: 'Error creating Author'})
