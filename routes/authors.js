@@ -3,14 +3,13 @@ const author = require('../models/author')
 const router = express.Router()
 
 const Author = require('../models/author')
+const Book = require('../models/book')
 
 // All authors route
-// Todas as routes /authors já têm o prefixo /authors
 
 router.get('/', async (req,res) => {
     let searchOptions = {}
-    // Precisamos usar req.query e nao req.body pq estamos
-    // pedindo pelo GET e nao POST
+
     if(req.query.name != null && req.query.name !== ''){
         searchOptions.name = new RegExp(req.query.name, 'i')
     }
@@ -57,5 +56,77 @@ router.post('/', async (req, res) => {
     // })
   }
 })
+
+
+
+
+
+
+
+
+
+// Specific Author Route
+
+router.get('/:id', async (req, res) =>{
+    try {
+        const author = await Author.findById(req.params.id)
+        const books =  await Book.find({ author: author.id })
+        res.render('authors/show', {
+            author: author,
+            booksByAuthor: books
+        })
+    } catch (error){
+        console.log(error)
+        res.redirect('/')
+    }
+})
+router.get('/:id/edit', async (req, res) =>{
+    try {
+        const localAuthor = await Author.find({ _id: req.params.id})
+        const authorsBooks = await Book.find({ author: req.params.id})
+        console.log('Encontrei livros do autor em questao: ' + authorsBooks.length)
+        res.render('authors/edit', { author: localAuthor[0], authorsBooks: authorsBooks})
+    } catch {
+        console.log('deu ruim')
+        res.render('authors/new', { errorMessage: "Error finding author!!"})  // ---> eu que fiz, revisar dps      
+    }
+})
+
+router.put('/:id', async (req, res) => {
+    let author
+    try {
+    // const result = await Author.updateOne({_id: req.params.id}, {$set : { "name": req.body.newName}}).limit(1)
+      author = await Author.findById(req.params.id)
+      author.name = req.body.name //AQUI
+      await author.save()
+      res.redirect(`/authors/${author.id}`)
+    } catch (error) {
+      if (author == null) {
+        res.redirect('/')
+      } else {
+        res.render('authors/edit', {
+          author: author,
+          errorMessage: 'Error updating Author'
+        })
+      }
+    }
+  })
+
+router.delete('/:id', async (req, res) =>{
+    let author
+    try {
+    // const result = await Author.updateOne({_id: req.params.id}, {$set : { "name": req.body.newName}}).limit(1)
+      author = await Author.findById(req.params.id)
+      await author.remove() 
+      res.redirect(`/authors`)
+    } catch (error) {
+      if (author == null) {
+        res.redirect('/')
+      } else {
+        res.redirect(`/authors/${author.id}`)
+      }
+    }
+})
+
 
 module.exports = router
