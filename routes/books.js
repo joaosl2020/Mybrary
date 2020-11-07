@@ -172,7 +172,7 @@ router.put('/:id', upload.single('cover'), async (req, res) => {
         if (book != null){
             renderEditPage(res, book, true)
         } else {
-            redirect('/ ')
+            res.redirect('/ ')
         }
     }
 
