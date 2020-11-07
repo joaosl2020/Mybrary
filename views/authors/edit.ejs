@@ -1,11 +1,13 @@
 <h1>Edit Author: <%= author.name %> </h1>
     <form method="POST" action='/authors/<%= author.id %>?_method=PUT' >
         <div>
-            <!-- <label>New name:</label>
-            <input type="text" name="newName"> -->
             <%- include('_form_fields') %> 
-            <button type="submit">Update</button>
-            <a href="/authors/<%= author.id %>">Cancel</a>
+
+            <div class="form-row form-row-end btn-row">
+                <button class="btn btn-primary" type="submit">Update</button>
+                <a class="btn btn-danger" href="/authors/<%= author.id %>">Cancel</a>
+            </div>
+
 
         </div>
     </form>
